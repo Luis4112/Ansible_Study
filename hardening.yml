@@ -1,0 +1,44 @@
+---
+- name: Change SSH Port to 2222
+  lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^#?Port'
+      line: 'Port 2222'
+    
+    - name: Disable root login via SSH
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin no'
+   
+    - name: Disable password Authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+
+
+    - name: Add SELinux context for SSh port 2222
+      command: semanage port -a -t ssh_port_t -p tcp 2222
+      ignore_errors: true
+
+    - name: Open Port 2222 in firewalld
+      firewalld:
+        port: 2222/tcp
+        permanent: true
+        state: enabled
+
+    - name: Remove SSH servicce from firewalld
+    firewalld:
+      service: ssh
+      permanent: true
+      state: disabled
+
+    - name: Reload firewalld
+      command: firewall-cmd --reload
+  
+    - name: Restart SSH service
+      systemd:
+        name: sshd
+        state: restarted
+
