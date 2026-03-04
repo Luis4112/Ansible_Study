@@ -1,0 +1,42 @@
+---
+- name: Hardening OS
+  hosts: rocky
+  become: true
+
+  tasks:
+    - name: Change SSH Port
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?Port'
+        line: 'Port 2222'
+    - name: Disable Password Authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+    - name: Disable Root Login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin no'
+    - name: AddSELinux context for new SSH port 2222
+      command: /usr/sbin/semanage port -a -t ssh_port_t -p tcp 2222
+      ignore_errors: true
+    - name: Firewalld ssh removal
+      firewalld:
+        service: ssh
+        permanent: true
+        state: disabled
+    - name: Firewalld open Port 2222
+      firewalld:
+        port: 2222/tcp
+        permanent: true
+        state: enabled
+    - name: Saving changes on Firewalld
+      command: firewall-cmd --reload
+    - name: Restart SSH via systemd
+      systemd:
+        name: sshd
+        state: restarted
+        
+
