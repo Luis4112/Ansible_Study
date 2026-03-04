@@ -15,6 +15,12 @@ Automates basic SSH and firewall hardening on a fresh Rocky Linux install.
 Learned: semanage needs full path in Ansible, dependencies must be 
 installed before use, order of operations matters for SELinux + sshd.
 
+### Why hardeningnew?
+
+Because hardening.yml is my failure project. Feel free to look at it. Don't use it. It's unusable either way :D
+It was my first time writing YAML, vim wasn't really set up correctly to simplify the indentation for writing yaml, so indentation is very much wrong.
+
+
 ### nginx.yml
 Simple nginx install and enable. First playbook — mainly to understand 
 idempotency in practice.
