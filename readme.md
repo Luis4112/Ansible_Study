@@ -10,14 +10,6 @@ system administration tasks.
 - SSH key-based authentication configured
 - Sudo privileges on managed nodes
 
-## Structure
-
-ansible-lab/
-├── inventory          # Host inventory
-├── hardening.yml      # OS hardening playbook
-├── nginx.yml          # Nginx installation playbook
-└── README.md
-
 ## Usage
 
 Clone the repo and configure your inventory file with your target hosts:
